@@ -1,0 +1,26 @@
+[
+  {
+    "productId": "1",
+    "name": "Stuart",
+    "description": "30x11x5 cm | 211g",
+    "photo": "https://static3.tcdn.com.br/img/img_prod/460977/boneco_stuart_minions_barulhento_e_bagunceiro_mattel_65159_1_20201211174307.jpeg"
+  },
+  {
+    "productId": "2",
+    "name": "Dave",
+    "description": "30x11x5 cm | 211g",
+    "photo": "https://static3.tcdn.com.br/img/img_prod/460977/boneco_dave_minions_barulhento_e_bagunceiro_mattel_65157_1_20201211174307.jpeg"
+  },
+  {
+    "productId": "3",
+    "name": "Bob",
+    "description": "30x11x5 cm | 211g",
+    "photo": "https://static3.tcdn.com.br/img/img_prod/460977/boneco_bob_minions_barulhento_e_bagunceiro_mattel_65161_1_20201211174307.jpeg"
+  },
+  {
+    "productId": "4",
+    "name": "Otto",
+    "description": "30x11x5 cm | 211g",
+    "photo": "https://static3.tcdn.com.br/img/img_prod/460977/boneco_otto_minions_barulhento_e_bagunceiro_mattel_65155_1_20201211174307.jpeg"
+  }
+]
