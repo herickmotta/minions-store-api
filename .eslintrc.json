@@ -11,5 +11,7 @@
         "ecmaVersion": 12
     },
     "rules": {
+      "import/no-mutable-exports": "off",
+      "no-unused-vars": "off"
     }
 }

@@ -1,6 +1,6 @@
-
-const IS_OFFLINE = process.env.IS_OFFLINE;
 import { DynamoDB } from 'aws-sdk';
+
+const { IS_OFFLINE } = process.env;
 
 let client;
 if (IS_OFFLINE === 'true') {
@@ -8,11 +8,10 @@ if (IS_OFFLINE === 'true') {
     region: 'localhost',
     accessKeyId: 'xxxx',
     secretAccessKey: 'xxxx',
-    endpoint: 'http://localhost:8000'
-  })
-
+    endpoint: 'http://localhost:8000',
+  });
 } else {
   client = new DynamoDB.DocumentClient();
-};
+}
 
 export default client;

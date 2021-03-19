@@ -11,7 +11,7 @@ plugins:
   - serverless-offline
 
 custom:
-  tableName: 'products-table-${self:provider.stage}'
+  tableName: 'minions-table-${self:provider.stage}'
   dynamodb:
     stages:
       - ${self:provider.stage}
@@ -31,47 +31,74 @@ provider:
   lambdaHashingVersion: '20201221'
   region: us-east-1
   stage: dev
-  iam.role.statements:
+  iamRoleStatements:
     - Effect: Allow
       Action:
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-      Resource:
-        - { "Fn::GetAtt": ["ProductsDynamoDBTable", "Arn" ] }
+        - dynamodb:*
+      Resource: "*"
   environment:
-    PRODUCTS_TABLE: ${self:custom.tableName}
+    MINIONS_TABLE: ${self:custom.tableName}
 
 functions:
-  create:
+  createProduct:
     handler: src/api/product.create
     events:
       - http:
           path: products
           method: post
-  list:
+          cors: true
+  listProducts:
     handler: src/api/product.getAll
     events:
       - http:
           path: products
           method: get
+          cors: true
+  createUser:
+    handler: src/api/user.create
+    events:
+      - http:
+          path: users
+          method: post
+          cors: true
+  getUser:
+    handler: src/api/user.getByEmail
+    events:
+      - http:
+          path: users
+          method: get
+          cors: true
+  createOrder:
+    handler: src/api/order.create
+    events:
+      - http:
+          path: orders
+          method: post
+          cors: true
+          authorizer: aws_iam
+
+
+
 
 resources:
   Resources:
-    ProductsDynamoDBTable:
+    MinionsDynamoDBTable:
       Type: 'AWS::DynamoDB::Table'
       Properties:
         AttributeDefinitions:
           -
-            AttributeName: productId
+            AttributeName: PK
+            AttributeType: S
+          -
+            AttributeName: SK
             AttributeType: S
         KeySchema:
           -
-            AttributeName: productId
+            AttributeName: PK
             KeyType: HASH
+          -
+            AttributeName: SK
+            KeyType: RANGE
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
