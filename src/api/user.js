@@ -5,18 +5,20 @@ import db from '../utils/db';
 export const create = handler(async (event, context) => {
   const data = JSON.parse(event.body);
   const {
-    name, email, address, gender,
-  } = data;
+    name, phone_number: phone, gender, address,
+  } = data.attributes;
+  const { username: email, sub } = data;
 
   const params = {
-    TableName: process.env.MINION_TABLE,
+    TableName: process.env.MINIONS_TABLE,
     Item: {
-      PK: `USER#${email}`,
-      SK: `USER#${email}`,
+      PK: `USER#${sub}`,
+      SK: `USER#${sub}`,
       name,
       email,
       address,
       gender,
+      phone,
       createdAt: Date.now(),
     },
   };
@@ -25,15 +27,17 @@ export const create = handler(async (event, context) => {
   return params.Item;
 });
 
-export const getByEmail = handler(async (event, context) => {
-  const { email } = event.pathParameters;
+export const getById = handler(async (event, context) => {
+  const { sub } = event.pathParameters;
   const params = {
     TableName: process.env.MINIONS_TABLE,
     Key: {
-      PK: `USER#${email}`,
+      PK: `USER#${sub}`,
+      SK: `USER#${sub}`,
     },
   };
 
-  const result = await db.query(params).promise();
-  return result.Items;
+  const result = await db.get(params).promise();
+  result.Item.address = JSON.parse(result.Item.address);
+  return result.Item;
 });

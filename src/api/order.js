@@ -1,33 +1,58 @@
 import handler from '../utils/handler';
 import db from '../utils/db';
+import ses from '../utils/ses';
+import confirmationOrder from '../utils/emailTemplates/confirmationOrder';
+import sendConfirmationEmail from '../utils/emailService/sendConfirmationEmail';
 
 const uuid = require('uuid');
 
-export const create = handler(async (event, context) => {
-  const data = JSON.parse(event.body);
-  const userId = event.requestContext.identity.cognitoIdentityId;
+async function getUserBySub(sub) {
   const params = {
     TableName: process.env.MINIONS_TABLE,
-    Item: {
-      PK: `USER#${userId}`,
-      SK: `USER#${userId}#ORDER#${uuid.v1()}`,
-      products: data.products,
-      createdAt: Date.now(),
+    Key: {
+      PK: `USER#${sub}`,
+      SK: `USER#${sub}`,
     },
   };
 
-  await db.put(params).promise();
-  return {};
-});
+  const result = await db.get(params).promise();
+  return result.Item;
+}
 
-export const getAll = handler(async (event, context) => {
+export const create = handler(async (event, context) => {
+  const { sub } = event.pathParameters;
+  const cart = JSON.parse(event.body);
+  const products = JSON.stringify(cart.products);
   const params = {
     TableName: process.env.MINIONS_TABLE,
-    KeyConditionExpression: '#PK = :PK',
-    ExpressionAttributeNames: { '#PK': 'PK' },
-    ExpressionAttributeValues: { ':PK': 'USER' },
+    Item: {
+      PK: `USER#${sub}`,
+      SK: `USER#${sub}#ORDER#${uuid.v1()}`,
+      products,
+      total: cart.total,
+      shipping: cart.shipping,
+      discount: cart.discount,
+      createdAt: Date.now(),
+    },
+  };
+  await db.put(params).promise();
+
+  const user = await getUserBySub(sub);
+  await sendConfirmationEmail(cart, user);
+
+  return params.Item;
+});
+
+export const getByUserId = handler(async (event, context) => {
+  const { sub } = event.pathParameters;
+  const params = {
+    TableName: process.env.MINIONS_TABLE,
+    KeyConditionExpression: '#PK = :PK and begins_with(#SK, :SK)',
+    ExpressionAttributeNames: { '#PK': 'PK', '#SK': 'SK' },
+    ExpressionAttributeValues: { ':PK': `USER#${sub}`, ':SK': `USER#${sub}#ORDER#` },
   };
 
   const result = await db.query(params).promise();
+  result.Items.forEach((i) => { i.products = JSON.parse(i.products); });
   return result.Items;
 });

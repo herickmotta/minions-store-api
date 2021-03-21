@@ -12,6 +12,7 @@
     },
     "rules": {
       "import/no-mutable-exports": "off",
-      "no-unused-vars": "off"
+      "no-unused-vars": "off",
+      "no-param-reassign": "off"
     }
 }
