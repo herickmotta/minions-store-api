@@ -24,7 +24,7 @@ This example is made to work with the Serverless Framework dashboard which inclu
 $ serverless login
 $ serverless deploy
 ```
-.env files:
+.env vars:
 - EMAIL_TO: a alternative email to send confirmation order - REQUIRED
 - SENDGRID_API_KEY: a api key for sendgrid - REQUIRED
 
