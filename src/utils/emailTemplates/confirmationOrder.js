@@ -989,7 +989,7 @@ function htmlTemplate(cart) {
                               </tr>
                               <tr>
                                 <td align="right">
-                                  <p>Discount:</p>
+                                  <p>Desconto:</p>
                                 </td>
                               </tr>
                               <tr>
@@ -1052,7 +1052,7 @@ function htmlTemplate(cart) {
                             <table cellpadding="0" cellspacing="0" width="100%" role="presentation">
                               <tr>
                                 <td align="left" class="es-p10t es-p10b es-p5r es-p5l">
-                                  <p style="font-size: 16px"><strong>Сontact</strong></p>
+                                  <p style="font-size: 16px"><strong>Contato</strong></p>
                                 </td>
                               </tr>
                               <tr>

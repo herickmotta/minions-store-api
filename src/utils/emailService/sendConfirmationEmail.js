@@ -1,39 +1,17 @@
 import confirmationOrder from '../emailTemplates/confirmationOrder';
-import ses from '../ses';
+
+const sgMail = require('@sendgrid/mail');
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 export default async function sendConfirmationEmail(cart, user) {
   const emailParams = {
-    Destination: {
-      ToAddresses: [
-        'herickrossato@gmail.com',
-        user.email,
-      ],
-    },
-    Message: {
-      Body: {
-        Html: {
-          Data: confirmationOrder(cart),
-        },
-        Text: {
-          Data: 'test',
-        },
-      },
-      Subject: {
-        Data: `Confirmação de reserva - ${user.name}`,
-      },
-    },
-
-    Source: 'herickrossato@gmail.com',
-    Tags: [
-      {
-        Name: 'Order',
-        Value: 'Order',
-      },
-    ],
+    to: [user.email, process.env.EMAIL_TO],
+    from: 'herickrossato@gmail.com',
+    subject: `Confirmação de Reserva - ${user.name}`,
+    text: 'Reserva confirmada',
+    html: confirmationOrder(cart),
   };
 
-  ses.sendEmail(emailParams, (err, data) => {
-    if (err) console.log(err, err.stack);
-    else console.log(data);
-  });
+  await sgMail.send(emailParams);
 }

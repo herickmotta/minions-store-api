@@ -1,7 +1,5 @@
 import handler from '../utils/handler';
 import db from '../utils/db';
-import ses from '../utils/ses';
-import confirmationOrder from '../utils/emailTemplates/confirmationOrder';
 import sendConfirmationEmail from '../utils/emailService/sendConfirmationEmail';
 
 const uuid = require('uuid');
@@ -30,6 +28,7 @@ export const create = handler(async (event, context) => {
       SK: `USER#${sub}#ORDER#${uuid.v1()}`,
       products,
       total: cart.total,
+      subtotal: cart.subTotal,
       shipping: cart.shipping,
       discount: cart.discount,
       createdAt: Date.now(),
@@ -39,7 +38,7 @@ export const create = handler(async (event, context) => {
 
   const user = await getUserBySub(sub);
   await sendConfirmationEmail(cart, user);
-
+  params.Item.products = JSON.parse(params.Item.products);
   return params.Item;
 });
 
