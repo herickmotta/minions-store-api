@@ -1,6 +1,7 @@
 # Serverless Framework Node REST API on AWS
 
 Front-end: https://github.com/herickmotta/minions-store-client-front
+
 Demo-app: https://minions-store-client-front-la2np2kmo-herickmotta.vercel.app
 
 Stack:
